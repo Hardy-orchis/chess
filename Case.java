@@ -24,7 +24,6 @@ public class Case extends JPanel {
         this.piece = piece;
         this.table = table;
         this.position = position;
-
         this.setLayout(new GridBagLayout());
         
         int size = 700/8;
