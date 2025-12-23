@@ -41,84 +41,234 @@ public class Piece extends JPanel{
     }
 
 
-    public Position[] listeDesMouvementPossible(){
-
-        if(this.nom=="Pion" && this.couleur == "noir" ){
-            Position[] positions = new Position[1];
-            positions[0] = new Position(this.position.x-1, this.position.y);
-            return positions;
+    public ArrayList<Position> listeDesMouvementPossible(Case[][] listeDesCase){
+        List<Position> positions = new ArrayList<>();
+        
+        if("Pion".equals(this.nom) && "noir".equals(this.couleur)){
+            if(listeDesCase[this.position.x - 1][this.position.y].piece==null){
+                ajouterSiValide(positions, this.position.x - 1, this.position.y);
+            }
+            return new ArrayList<>(positions);
         }
-        if(this.nom=="Pion" && this.couleur == "blanc" ){
-            Position[] positions = new Position[1];
-            positions[0] = new Position(this.position.x+1, this.position.y);
-            return positions;
+        
+        if("Pion".equals(this.nom) && "blanc".equals(this.couleur)){
+            if(listeDesCase[this.position.x - 1][this.position.y].piece==null){
+                ajouterSiValide(positions, this.position.x + 1, this.position.y);
+            }
+            return new ArrayList<>(positions);
         }
-
-        if ("Cavalier".equals(this.nom)) {
-            List<Position> positions = new ArrayList<>();
-            ajouterSiValide(positions, this.position.x + 1, this.position.y + 2);
-            ajouterSiValide(positions, this.position.x + 1, this.position.y - 2);
-            ajouterSiValide(positions, this.position.x - 1, this.position.y + 2);
-            ajouterSiValide(positions, this.position.x - 1, this.position.y - 2);
-
-            return positions.toArray(new Position[0]);
-        }
-
-        if("Roi".equals(nom)){
-            List<Position> positions = new ArrayList<>();
-            for (int dx = -1; dx <= 1; dx++) {
-                for (int dy = -1; dy <= 1; dy++) {
-                    if (dx != 0 || dy != 0) {
-                        ajouterSiValide(positions, this.position.x + dx, this.position.y + dy);
+        
+        if("Cavalier".equals(this.nom)){
+            int[][] mouvements = {
+                {2, 1}, {2, -1}, {-2, 1}, {-2, -1},
+                {1, 2}, {1, -2}, {-1, 2}, {-1, -2}
+            };
+            
+            for(int[] mouv : mouvements){
+                int newX = this.position.x + mouv[0];
+                int newY = this.position.y + mouv[1];
+                
+                if(newX >= 0 && newX < 8 && newY >= 0 && newY < 8){
+                    if(listeDesCase[newX][newY].piece == null || 
+                    !listeDesCase[newX][newY].piece.couleur.equals(this.couleur)){
+                        ajouterSiValide(positions, newX, newY);
                     }
                 }
             }
-            return positions.toArray(new Position[0]);
+            return new ArrayList<>(positions);
         }
-
-        if("Dame".equals(nom)){
-            List<Position> positions = new ArrayList<>();
-            for (int i = 0; i < 8; i++) {
-                if (i != this.position.x) {
+        
+        if("Roi".equals(this.nom)){
+            for(int dx = -1; dx <= 1; dx++){
+                for(int dy = -1; dy <= 1; dy++){
+                    if(dx != 0 || dy != 0){
+                        int newX = this.position.x + dx;
+                        int newY = this.position.y + dy;
+                        if(newX >= 0 && newX < 8 && newY >= 0 && newY < 8){
+                            if(listeDesCase[newX][newY].piece == null || 
+                            !listeDesCase[newX][newY].piece.couleur.equals(this.couleur)){
+                                ajouterSiValide(positions, newX, newY);
+                            }
+                        }
+                    }
+                }
+            }
+            return new ArrayList<>(positions);
+        }
+        
+        if("Dame".equals(this.nom)){
+            for(int i = this.position.x + 1; i < 8; i++){
+                if(listeDesCase[i][this.position.y].piece == null){
                     ajouterSiValide(positions, i, this.position.y);
-                }
-                if (i != this.position.y) {
-                    ajouterSiValide(positions, this.position.x, i);
-                }
-            }
-            for (int dx = -7; dx <= 7; dx++) {
-                if (dx != 0) {
-                    ajouterSiValide(positions, this.position.x + dx, this.position.y + dx);
-                    ajouterSiValide(positions, this.position.x + dx, this.position.y - dx);
+                } else {
+                    if(!listeDesCase[i][this.position.y].piece.couleur.equals(this.couleur)){
+                        ajouterSiValide(positions, i, this.position.y);
+                    }
+                    break; 
                 }
             }
-            return positions.toArray(new Position[0]);
-        }
-
-        if("Fou".equals(nom)){
-            List<Position> positions = new ArrayList<>();
-            for (int dx = -7; dx <= 7; dx++) {
-                if (dx != 0) {
-                    ajouterSiValide(positions, this.position.x + dx, this.position.y + dx);
-                    ajouterSiValide(positions, this.position.x + dx, this.position.y - dx);
-                }
-            }
-            return positions.toArray(new Position[0]);
-        }
-
-        if("Tour".equals(nom)){
-            List<Position> positions = new ArrayList<>();
-            for (int i = 0; i < 8; i++) {
-                if (i != this.position.x) {
+            for(int i = this.position.x - 1; i >= 0; i--){
+                if(listeDesCase[i][this.position.y].piece == null){
                     ajouterSiValide(positions, i, this.position.y);
-                }
-                if (i != this.position.y) {
-                    ajouterSiValide(positions, this.position.x, i);
+                } else {
+                    if(!listeDesCase[i][this.position.y].piece.couleur.equals(this.couleur)){
+                        ajouterSiValide(positions, i, this.position.y);
+                    }
+                    break;
                 }
             }
-            return positions.toArray(new Position[0]);
+            for(int i = this.position.y + 1; i < 8; i++){
+                if(listeDesCase[this.position.x][i].piece == null){
+                    ajouterSiValide(positions, this.position.x, i);
+                } else {
+                    if(!listeDesCase[this.position.x][i].piece.couleur.equals(this.couleur)){
+                        ajouterSiValide(positions, this.position.x, i);
+                    }
+                    break;
+                }
+            }
+            for(int i = this.position.y - 1; i >= 0; i--){
+                if(listeDesCase[this.position.x][i].piece == null){
+                    ajouterSiValide(positions, this.position.x, i);
+                } else {
+                    if(!listeDesCase[this.position.x][i].piece.couleur.equals(this.couleur)){
+                        ajouterSiValide(positions, this.position.x, i);
+                    }
+                    break;
+                }
+            }
+            
+            for(int d = 1; this.position.x + d < 8 && this.position.y + d < 8; d++){
+                if(listeDesCase[this.position.x + d][this.position.y + d].piece == null){
+                    ajouterSiValide(positions, this.position.x + d, this.position.y + d);
+                } else {
+                    if(!listeDesCase[this.position.x + d][this.position.y + d].piece.couleur.equals(this.couleur)){
+                        ajouterSiValide(positions, this.position.x + d, this.position.y + d);
+                    }
+                    break;
+                }
+            }
+            for(int d = 1; this.position.x + d < 8 && this.position.y - d >= 0; d++){
+                if(listeDesCase[this.position.x + d][this.position.y - d].piece == null){
+                    ajouterSiValide(positions, this.position.x + d, this.position.y - d);
+                } else {
+                    if(!listeDesCase[this.position.x + d][this.position.y - d].piece.couleur.equals(this.couleur)){
+                        ajouterSiValide(positions, this.position.x + d, this.position.y - d);
+                    }
+                    break;
+                }
+            }
+            for(int d = 1; this.position.x - d >= 0 && this.position.y + d < 8; d++){
+                if(listeDesCase[this.position.x - d][this.position.y + d].piece == null){
+                    ajouterSiValide(positions, this.position.x - d, this.position.y + d);
+                } else {
+                    if(!listeDesCase[this.position.x - d][this.position.y + d].piece.couleur.equals(this.couleur)){
+                        ajouterSiValide(positions, this.position.x - d, this.position.y + d);
+                    }
+                    break;
+                }
+            }
+            for(int d = 1; this.position.x - d >= 0 && this.position.y - d >= 0; d++){
+                if(listeDesCase[this.position.x - d][this.position.y - d].piece == null){
+                    ajouterSiValide(positions, this.position.x - d, this.position.y - d);
+                } else {
+                    if(!listeDesCase[this.position.x - d][this.position.y - d].piece.couleur.equals(this.couleur)){
+                        ajouterSiValide(positions, this.position.x - d, this.position.y - d);
+                    }
+                    break;
+                }
+            }
+            
+            return new ArrayList<>(positions);
         }
-
-        return null;
+        if("Fou".equals(this.nom)){
+            for(int d = 1; this.position.x + d < 8 && this.position.y + d < 8; d++){
+                if(listeDesCase[this.position.x + d][this.position.y + d].piece == null){
+                    ajouterSiValide(positions, this.position.x + d, this.position.y + d);
+                } else {
+                    if(!listeDesCase[this.position.x + d][this.position.y + d].piece.couleur.equals(this.couleur)){
+                        ajouterSiValide(positions, this.position.x + d, this.position.y + d);
+                    }
+                    break;
+                }
+            }
+            for(int d = 1; this.position.x + d < 8 && this.position.y - d >= 0; d++){
+                if(listeDesCase[this.position.x + d][this.position.y - d].piece == null){
+                    ajouterSiValide(positions, this.position.x + d, this.position.y - d);
+                } else {
+                    if(!listeDesCase[this.position.x + d][this.position.y - d].piece.couleur.equals(this.couleur)){
+                        ajouterSiValide(positions, this.position.x + d, this.position.y - d);
+                    }
+                    break;
+                }
+            }
+            for(int d = 1; this.position.x - d >= 0 && this.position.y + d < 8; d++){
+                if(listeDesCase[this.position.x - d][this.position.y + d].piece == null){
+                    ajouterSiValide(positions, this.position.x - d, this.position.y + d);
+                } else {
+                    if(!listeDesCase[this.position.x - d][this.position.y + d].piece.couleur.equals(this.couleur)){
+                        ajouterSiValide(positions, this.position.x - d, this.position.y + d);
+                    }
+                    break;
+                }
+            }
+            for(int d = 1; this.position.x - d >= 0 && this.position.y - d >= 0; d++){
+                if(listeDesCase[this.position.x - d][this.position.y - d].piece == null){
+                    ajouterSiValide(positions, this.position.x - d, this.position.y - d);
+                } else {
+                    if(!listeDesCase[this.position.x - d][this.position.y - d].piece.couleur.equals(this.couleur)){
+                        ajouterSiValide(positions, this.position.x - d, this.position.y - d);
+                    }
+                    break;
+                }
+            }
+            return new ArrayList<>(positions);
+        }
+        
+        if("Tour".equals(this.nom)){
+            for(int i = this.position.x + 1; i < 8; i++){
+                if(listeDesCase[i][this.position.y].piece == null){
+                    ajouterSiValide(positions, i, this.position.y);
+                } else {
+                    if(!listeDesCase[i][this.position.y].piece.couleur.equals(this.couleur)){
+                        ajouterSiValide(positions, i, this.position.y);
+                    }
+                    break;
+                }
+            }
+            for(int i = this.position.x - 1; i >= 0; i--){
+                if(listeDesCase[i][this.position.y].piece == null){
+                    ajouterSiValide(positions, i, this.position.y);
+                } else {
+                    if(!listeDesCase[i][this.position.y].piece.couleur.equals(this.couleur)){
+                        ajouterSiValide(positions, i, this.position.y);
+                    }
+                    break;
+                }
+            }
+            for(int i = this.position.y + 1; i < 8; i++){
+                if(listeDesCase[this.position.x][i].piece == null){
+                    ajouterSiValide(positions, this.position.x, i);
+                } else {
+                    if(!listeDesCase[this.position.x][i].piece.couleur.equals(this.couleur)){
+                        ajouterSiValide(positions, this.position.x, i);
+                    }
+                    break;
+                }
+            }
+            for(int i = this.position.y - 1; i >= 0; i--){
+                if(listeDesCase[this.position.x][i].piece == null){
+                    ajouterSiValide(positions, this.position.x, i);
+                } else {
+                    if(!listeDesCase[this.position.x][i].piece.couleur.equals(this.couleur)){
+                        ajouterSiValide(positions, this.position.x, i);
+                    }
+                    break;
+                }
+            }
+            return new ArrayList<>(positions);
+        }
+        
+        return new ArrayList<>();
     }
 }
