@@ -2,6 +2,8 @@ public class Main{
 
     public static Piece pieceSelectione;
 
+    public static String tourDeRole = "blanc";
+
     public static boolean estPair(int nombre) {
         return nombre % 2 == 0;
     }

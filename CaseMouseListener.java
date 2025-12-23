@@ -19,40 +19,47 @@ public class CaseMouseListener implements MouseListener {
         return false;
     }
 
-
-    @Override
-    public void mouseClicked(MouseEvent e) {
+    void deplacementPiece(String couleurRole){
         if(this.cases.piece != null) {
-            if(Main.pieceSelectione == null) {
-                Main.pieceSelectione = this.cases.piece;
-                System.out.println("Position pion:"+ Main.pieceSelectione.position.x +", "+ Main.pieceSelectione.position.y+", Nom: "+ Main.pieceSelectione.nom);
-            } 
-            else if(this.cases.piece.couleur.equals(Main.pieceSelectione.couleur)) {
-                Main.pieceSelectione = this.cases.piece;
+            if(this.cases.piece.couleur.equals(couleurRole)){
+                if(Main.pieceSelectione == null) {
+                    Main.pieceSelectione = this.cases.piece;
+                    System.out.println("Position pion:"+ Main.pieceSelectione.position.x +", "+ Main.pieceSelectione.position.y+", Nom: "+ Main.pieceSelectione.nom);
+                }
+                else if(this.cases.piece.couleur.equals(Main.pieceSelectione.couleur)) {
+                    Main.pieceSelectione = this.cases.piece;
+                }
             }
             else {
-                ArrayList<Position> mouvementDuPiece = Main.pieceSelectione.listeDesMouvementPossible(this.cases.table.cases);
-                if(rechercheDansLesMouvement(mouvementDuPiece, cases.position)) {
-                    this.cases.remove(this.cases.piece);
-                    
-                    Case ancienneCase = this.cases.table.cases[Main.pieceSelectione.position.x][Main.pieceSelectione.position.y];
-                    ancienneCase.remove(Main.pieceSelectione);
-                    ancienneCase.piece = null;
-                    
-                    Main.pieceSelectione.position.x = cases.position.x;
-                    Main.pieceSelectione.position.y = cases.position.y;
-                    
-                    this.cases.piece = Main.pieceSelectione;
-                    this.cases.add(Main.pieceSelectione);
-                    
-                    ancienneCase.revalidate();
-                    ancienneCase.repaint();
-                    this.cases.revalidate();
-                    this.cases.repaint();
+                if(Main.pieceSelectione!=null){
+                    ArrayList<Position> mouvementDuPiece = Main.pieceSelectione.listeDesMouvementPossible(this.cases.table.cases);
+                    if(rechercheDansLesMouvement(mouvementDuPiece, cases.position)) {
+                        this.cases.remove(this.cases.piece);
+                        
+                        Case ancienneCase = this.cases.table.cases[Main.pieceSelectione.position.x][Main.pieceSelectione.position.y];
+                        ancienneCase.remove(Main.pieceSelectione);
+                        ancienneCase.piece = null;
+                        
+                        Main.pieceSelectione.position.x = cases.position.x;
+                        Main.pieceSelectione.position.y = cases.position.y;
+                        
+                        this.cases.piece = Main.pieceSelectione;
+                        this.cases.add(Main.pieceSelectione);
+                        if(couleurRole=="blanc"){
+                            Main.tourDeRole = "noir";
+                        }else{
+                            Main.tourDeRole = "blanc";
+                        }
+                        
+                        ancienneCase.revalidate();
+                        ancienneCase.repaint();
+                        this.cases.revalidate();
+                        this.cases.repaint();
+                    }
+                    Main.pieceSelectione = null;
                 }
-                Main.pieceSelectione = null;
             }
-        } 
+        }
         else {
             if(Main.pieceSelectione != null) {
                 ArrayList<Position> mouvementDuPiece = Main.pieceSelectione.listeDesMouvementPossible(this.cases.table.cases);
@@ -68,6 +75,11 @@ public class CaseMouseListener implements MouseListener {
                     this.cases.piece = Main.pieceSelectione;
                     Main.pieceSelectione.premierCout = false;
                     this.cases.add(Main.pieceSelectione);
+                    if(couleurRole=="blanc"){
+                        Main.tourDeRole = "noir";
+                    }else{
+                        Main.tourDeRole = "blanc";
+                    }
                     
                     ancienneCase.revalidate();
                     ancienneCase.repaint();
@@ -76,6 +88,15 @@ public class CaseMouseListener implements MouseListener {
                 }
                 Main.pieceSelectione = null;
             }
+        }
+    }
+
+    @Override
+    public void mouseClicked(MouseEvent e) {
+        if(Main.tourDeRole=="blanc"){
+            this.deplacementPiece("blanc");
+        }else{
+            this.deplacementPiece("noir");
         }
     }
 
@@ -93,8 +114,10 @@ public class CaseMouseListener implements MouseListener {
             ArrayList<Position> mouvementDuPiece = this.cases.piece.listeDesMouvementPossible(this.cases.table.cases);
             for(Position pos : mouvementDuPiece) {
                 if(Main.pieceSelectione==null){
-                    this.cases.table.cases[pos.x][pos.y].affichageIndication = true;
-                    this.cases.table.cases[pos.x][pos.y].afficheIndication();
+                    if(this.cases.piece.couleur.equals(Main.tourDeRole)){
+                        this.cases.table.cases[pos.x][pos.y].affichageIndication = true;
+                        this.cases.table.cases[pos.x][pos.y].afficheIndication();
+                    }
                 }
             }
         }
