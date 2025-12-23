@@ -1,5 +1,7 @@
 public class Main{
 
+    public static Piece pieceSelectione;
+
     public static boolean estPair(int nombre) {
         return nombre % 2 == 0;
     }
@@ -21,9 +23,9 @@ public class Main{
         for (int i = 0; i < cases.length; i++) {
             for (int j = 0; j < cases[i].length; j++) {
                 if(estPair(i+j)){
-                    cases[i][j] = new Case("blanc", findPiece(i, j), table);
+                    cases[i][j] = new Case("blanc", findPiece(i, j), table, new Position(i, j));
                 }else if(!estPair(i+j)){
-                    cases[i][j] = new Case("marron", findPiece(i, j), table);
+                    cases[i][j] = new Case("marron", findPiece(i, j), table, new Position(i, j));
                 }
             }
         }

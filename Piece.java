@@ -16,12 +16,14 @@ public class Piece extends JPanel{
     String nom;
     Position position;
     String couleur;
+    boolean premierCout;
 
     Piece(String image, String nom, Position position, String couleur) throws IOException {
         this.nom = nom;
         this.image = image;
         this.position = position;
         this.couleur = couleur;
+        this.premierCout = true;
         BufferedImage myPicture = ImageIO.read(new File(image));
         Image scaledImage = myPicture.getScaledInstance(50, 70, Image.SCALE_SMOOTH);
         JLabel picLabel = new JLabel(new ImageIcon(scaledImage));
@@ -42,19 +44,36 @@ public class Piece extends JPanel{
 
     public ArrayList<Position> listeDesMouvementPossible(Case[][] listeDesCase){
         List<Position> positions = new ArrayList<>();
-        
-        if("Pion".equals(this.nom) && "noir".equals(this.couleur)){
-            if(listeDesCase[this.position.x - 1][this.position.y].piece==null){
-                ajouterSiValide(positions, this.position.x - 1, this.position.y);
+        if(!this.premierCout){
+            if("Pion".equals(this.nom) && "noir".equals(this.couleur)){
+                if(listeDesCase[this.position.x - 1][this.position.y].piece==null){
+                    ajouterSiValide(positions, this.position.x - 1, this.position.y);
+                }
+                return new ArrayList<>(positions);
             }
-            return new ArrayList<>(positions);
-        }
-        
-        if("Pion".equals(this.nom) && "blanc".equals(this.couleur)){
-            if(listeDesCase[this.position.x + 1][this.position.y].piece==null){
-                ajouterSiValide(positions, this.position.x + 1, this.position.y);
+            
+            if("Pion".equals(this.nom) && "blanc".equals(this.couleur)){
+                if(listeDesCase[this.position.x + 1][this.position.y].piece==null){
+                    ajouterSiValide(positions, this.position.x + 1, this.position.y);
+                }
+                return new ArrayList<>(positions);
             }
-            return new ArrayList<>(positions);
+        }else {
+             if("Pion".equals(this.nom) && "noir".equals(this.couleur)){
+                if(listeDesCase[this.position.x - 1][this.position.y].piece==null){
+                    ajouterSiValide(positions, this.position.x - 1, this.position.y);
+                    ajouterSiValide(positions, this.position.x - 2, this.position.y);
+                }
+                return new ArrayList<>(positions);
+            }
+            
+            if("Pion".equals(this.nom) && "blanc".equals(this.couleur)){
+                if(listeDesCase[this.position.x + 1][this.position.y].piece==null){
+                    ajouterSiValide(positions, this.position.x + 1, this.position.y);
+                    ajouterSiValide(positions, this.position.x + 2, this.position.y);
+                }
+                return new ArrayList<>(positions);
+            }
         }
         
         if("Cavalier".equals(this.nom)){
@@ -177,7 +196,6 @@ public class Piece extends JPanel{
                     break;
                 }
             }
-            
             return new ArrayList<>(positions);
         }
         if("Fou".equals(this.nom)){
