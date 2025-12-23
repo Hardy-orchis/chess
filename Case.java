@@ -9,6 +9,7 @@ public class Case extends JPanel {
     Table table;
     boolean affichageIndication;
     IndicationCercle indication = new IndicationCercle();
+    Position position;
 
     public Piece getPiece() {
         return piece;
@@ -18,10 +19,11 @@ public class Case extends JPanel {
         this.piece = piece;
     }
 
-    Case(String couleur, Piece piece, Table table) {
+    Case(String couleur, Piece piece, Table table, Position position) {
         this.couleur = couleur;
         this.piece = piece;
         this.table = table;
+        this.position = position;
         
         this.setLayout(new GridBagLayout());
         
