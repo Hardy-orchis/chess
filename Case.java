@@ -1,9 +1,6 @@
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridBagLayout;
-
-import javax.swing.BorderFactory;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 public class Case extends JPanel {
@@ -25,21 +22,24 @@ public class Case extends JPanel {
         this.couleur = couleur;
         this.piece = piece;
         this.table = table;
-        this.add(indication);
-        indication.setBackground(new Color(40, 40, 40));
-        indication.setLayout(new GridBagLayout());
-        indication.setVisible(false);
-
+        
+        this.setLayout(new GridBagLayout());
+        
         int size = 700/8;
         CaseMouseListener pieceMouseListener = new CaseMouseListener(this);
         addMouseListener(pieceMouseListener);
         setPreferredSize(new Dimension(size, size));
-        if(couleur == "marron"){
+        
+        if(couleur.equals("marron")){
             setBackground(Color.darkGray);
         }else{
             setBackground(Color.GRAY);
         }
-        if(this.piece!=null){
+        
+        indication.setVisible(false);
+        this.add(indication);
+        
+        if(this.piece != null){
             this.add(this.getPiece());
         }
     }
