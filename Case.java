@@ -1,0 +1,59 @@
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.GridBagLayout;
+
+import javax.swing.BorderFactory;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+
+public class Case extends JPanel {
+    String couleur;
+    Piece piece;
+    Table table;
+    boolean affichageIndication;
+    IndicationCercle indication = new IndicationCercle();
+
+    public Piece getPiece() {
+        return piece;
+    }
+
+    public void setPiece(Piece piece) {
+        this.piece = piece;
+    }
+
+    Case(String couleur, Piece piece, Table table) {
+        this.couleur = couleur;
+        this.piece = piece;
+        this.table = table;
+        this.add(indication);
+        indication.setBackground(new Color(40, 40, 40));
+        indication.setLayout(new GridBagLayout());
+        indication.setVisible(false);
+
+        int size = 700/8;
+        CaseMouseListener pieceMouseListener = new CaseMouseListener(this);
+        addMouseListener(pieceMouseListener);
+        setPreferredSize(new Dimension(size, size));
+        if(couleur == "marron"){
+            setBackground(Color.darkGray);
+        }else{
+            setBackground(Color.GRAY);
+        }
+        if(this.piece!=null){
+            this.add(this.getPiece());
+        }
+    }
+
+    public void afficheIndication(){
+        if(this.affichageIndication){
+            indication.setVisible(true);
+            this.revalidate();
+            this.repaint();
+        }else{
+            indication.setVisible(false);
+            this.revalidate();
+            this.repaint();
+        }
+    }
+
+}
