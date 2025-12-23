@@ -1,5 +1,4 @@
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -52,7 +51,7 @@ public class Piece extends JPanel{
         }
         
         if("Pion".equals(this.nom) && "blanc".equals(this.couleur)){
-            if(listeDesCase[this.position.x - 1][this.position.y].piece==null){
+            if(listeDesCase[this.position.x + 1][this.position.y].piece==null){
                 ajouterSiValide(positions, this.position.x + 1, this.position.y);
             }
             return new ArrayList<>(positions);
